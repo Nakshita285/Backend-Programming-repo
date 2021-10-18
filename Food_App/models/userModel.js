@@ -9,7 +9,7 @@ const validator = require('email-validator');
                                         // now we dont need this
 mongoose.connect(DB_LINK, {})           // previous parameters -> useNewUrlParser : true, useCreateIndex : true, useUnifiedTopology: true;
 .then(function(database){
-    console.log("Database is Created with user details!");
+    console.log("Database is Connected with server for Users!");
 })
 .catch(function(error){
     console.log("Error: ", error);
@@ -49,19 +49,42 @@ const userSchema = new mongoose.Schema({
         requried: true,
         validator: function(){
             return this.password == this.confirmPassword;
-        }
-    }   
+        }   
+    },
+    createdAt: Date,
+    token: Number,
+    role:{
+        type: String,
+        enum:["admin", "manager", "user"],
+        default: "user"
+    }
+
 })
+
+userSchema.pre('save', function(next){
+    // conifrm password will not be saved in DB
+    this.ConfirmPassword = undefined;
+    next();
+})
+
+userSchema.methods.resetHandler = function(password, confirmPassword){
+    this.password = password;
+    this.confirmPassword = confirmPassword;
+    this.token = undefined;
+}
 
 const userModel = new mongoose.model('userModel', userSchema);
 
-(async function createUserDB(){
-    let user = await userModel.create({
-        name : "Raghav",
-        age: 27,
-        email: "raghavJuneja@gmail.com",
-        password: "abcdef",
-        confirmPassword: "abcdef",
-    });
-    console.log("User created: ", user);
-})();
+
+// (async function createUserDB(){
+//     let user = await userModel.create({
+//         name : "Raghav",
+//         age: 27,
+//         email: "raghavJuneja@gmail.com",
+//         password: "abcdef",
+//         confirmPassword: "abcdef",
+//     });
+//     console.log("User created: ", user);
+// })();
+
+module.exports = userModel;
