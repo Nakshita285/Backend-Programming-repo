@@ -4,9 +4,12 @@ let {DB_LINK} = require('../secrets');
 const userModel = require('./userModel');
 
 // connect with server
-mongoose.connect(DB_LINK,{})
+mongoose.connect(DB_LINK,{
+    useNewUrlParser:true, 
+    // useUnifiedTopology:true
+})
 .then(function(){
-    console.log("Database is connected to the server for plans!");
+    console.log("Database is Connected with server for Plans!");
 })
 .catch(function(error){
     console.log("error" + error);
@@ -39,10 +42,17 @@ const planSchema = new mongoose.Schema({
 
             message: "Discount should be less than PriceList"
         }
+    },
+    reviews: {
+        // have the array for the id of reviews     
+        type: [mongoose.Schema.Types.objectId],
+        ref:"reviewModel"
     }
 })
 
-const planModel = new mongoose.model("planModel",planSchema);
+const planModel = new mongoose.model("planModel",planSchema); 
+// ref: "planModel" for reviewModel and review Schema 
+
 
 
 

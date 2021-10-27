@@ -7,7 +7,10 @@ const validator = require('email-validator');
 
 // connect server to the Mongoose       
                                         // now we dont need this
-mongoose.connect(DB_LINK, {})           // previous parameters -> useNewUrlParser : true, useCreateIndex : true, useUnifiedTopology: true;
+mongoose.connect(DB_LINK, {
+    useNewUrlParser:true
+    // useUnifiedTopology:true
+})           // previous parameters -> useNewUrlParser : true, useCreateIndex : true, useUnifiedTopology: true;
 .then(function(database){
     console.log("Database is Connected with server for Users!");
 })
@@ -57,7 +60,12 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum:["admin", "manager", "user"],
         default: "user"
-    }
+    },
+    // review:{
+    //     // Contains the array of review
+    //     type: [mongoose.Schema.Types.objectId],
+    //     ref: "reviewModel"
+    // }
 
 })
 
@@ -73,7 +81,7 @@ userSchema.methods.resetHandler = function(password, confirmPassword){
     this.token = undefined;
 }
 
-const userModel = new mongoose.model('userModel', userSchema);
+const userModel = new mongoose.model('userModel', userSchema); // ref: "userModel" for reviewschema 
 
 
 // (async function createUserDB(){

@@ -1,0 +1,111 @@
+ **** Create Plan ******
+// async function createPlan(request, response){
+//     try{
+//         let plan = request.body;
+//         if(plan){
+//             plan = await planModel.create(plan);
+//             response.status(200).json({
+//                 message: "Plan Created successfully"
+// \\            })
+//         }else{
+//             console.log(error);
+//             response.status(204).json({
+//                 message:"Plan not created"
+//             })
+//         }
+//     }catch(error){
+//         console.log(error);
+//         response.status(500).json({
+//             message: "Error occured",
+//             error: error.message
+//         })
+//     }
+// }
+
+
+**** Create User ******
+async function createUser(request, response){
+    try{
+        let user = request.body;
+        if(user){
+            user = await planModel.create(user);
+            response.status(200).json({
+                message: "Plan Created successfully",
+                user: user
+            })
+        }else{
+            console.log(error);
+            response.status(204).json({
+                message:"Plan not created"
+            })
+        }
+    }catch(error){
+        console.log(error);
+        response.status(500).json({
+            message: "Error occured",
+            error: error.message
+        })
+    }
+}
+
+
+
+
+// Update particular plan
+async function updatePlan(request, response){
+    try{
+        let id = request.params.id;
+        if(id){
+            let plan = request.body;
+            let updatedPlan = await planModel.findByIdAndUpdate(id, plan);
+            console.log(updatedPlan);
+            response.status(200).json({
+                message: "Plan updated",
+                plan: updatedPlan
+            }) 
+        }
+    }catch(error){
+        response.status(500).json({
+            message: "Server error",
+            error: error.message
+        })
+    }
+}
+
+
+
+// Display particular plan
+async function getPlanById(request, response){
+    try{
+        let id = request.params.id;
+        // console.log(name);
+        let plan = await planModel.findOne({_id: id});
+        response.status(200).json({
+            message: "Plan found",
+            plan: plan
+        })
+    }catch(error){
+        response.status(500).json({
+            messag: "plan Not found",
+            error: error.message
+        })
+    }
+}
+
+
+async function deletePlan(request, response){
+    try{
+        let id = request.params.id;
+        let deletedPlan = await planModel.findByIdAndDelete(id);
+        response.status(204).json({
+            message: "Plan deleted",
+            plan: deletedPlan
+        })
+
+    }catch(error){
+        response.status(500).json({
+        message: "Server error",
+        error: error.message
+        })
+    }
+}

@@ -5,7 +5,7 @@ const { JWT_Key} = require('../secrets');
 
 const authRouter = express.Router();
 
-let emailSender = require("../externals/emailSender")
+let emailSender = require("../helpers/emailSender");
 
 authRouter
     .post('/signUp', setCreatedAt, signUpUser)
