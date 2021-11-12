@@ -30,9 +30,6 @@ const planSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    ratingAverage:{
-        type: Number
-    },
     discount: {
         type:Number,
         validate: {
@@ -47,7 +44,8 @@ const planSchema = new mongoose.Schema({
         // have the array for the id of reviews     
         type: [mongoose.Schema.Types.objectId],
         ref:"reviewModel"
-    }
+    },
+    averageRating: Number
 })
 
 const planModel = new mongoose.model("planModel",planSchema); 

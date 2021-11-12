@@ -56,6 +56,29 @@ async function getPlans(request, response){
         }
     }
     
+async function getTop3Plans(request,response){
+    try{
+        // top 3 plans -> based on ratings -> find their reviews
+        let plans = await planModel
+            .find().sort("-averageRating").limit(4)
+            .populate({
+                path: 'reviews',
+                select:`review rating -${"_id"}`
+            })
+// populate function-> let use reference objects of different models 
+// plan model -> reviews model ko refer karna 
+        console.log(plans);
+        response.status(200).json({
+            plans: plans
+        })
+    }catch(error){
+        console.log(error);
+        response.status(404).json({
+            message:"Error in request",
+            error: error.message
+        })
+    }
+}
     // factory -> require create plan function
 
     // functions 
@@ -66,6 +89,9 @@ async function getPlans(request, response){
     const updatePlan = factory.updateElement("plan",planModel);
     const deletePlan = factory.deleteElement("plan",planModel);
 
+
+planRouter.route('/top3Plans')
+    .get(getTop3Plans)    
 planRouter.route('/:id')
     .get(protectRoute,getPlanById)
     .patch(protectRoute,updatePlan)

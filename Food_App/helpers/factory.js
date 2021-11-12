@@ -32,6 +32,7 @@ module.exports.getElements = function(elementName, elementModel){
             elements : elements
             })
         }catch(error){
+            console.log(error);
             response.status(500).json({
                 message: `Error occured / NO ${elementName} found` ,
                 error: error.message

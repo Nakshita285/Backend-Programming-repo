@@ -15,18 +15,19 @@ const getReviews = factory.getElements("reviews", reviewModel);
 const createReviews = async function(request,response){
     try{
         let review = await reviewModel.create(request.body);
+        console.log(review);
         let planId = review.plan;
         let plan = await planModel.findByIdAndUpdate(planId);
-        // ratingAverage
-        if(plan.ratingAverage){
-            let sum = plan.ratingAverage * plan.reviews.length;
-            let finalAvgRating = (sum + review.rating)/ (plan.reviews.length +1);
-            plan.ratingAverage= finalAvgRating;
-            plan.reviews.push(review["_id"]);
+        // averageRating
+        if(plan.averageRating){
+            let sum = plan.averageRating * plan.reviews.length;
+            let totalNumReviews = plan.reviews.length+1;
+            let finalAvgRating = (sum + review.rating)/ totalNumReviews;
+            plan.averageRating= finalAvgRating;
         }else{
-            plan.ratingAverage = reviewRating;
+            plan.averageRating = review.rating;
         }
-        
+        plan.reviews.push(review["_id"]);
         await plan.save();
         response.status(200).json({
             message: "Review Created successfully",
@@ -34,6 +35,7 @@ const createReviews = async function(request,response){
         })
         
     }catch(error){
+        console.log(error);
         response.status(500).json({
             message: "error occured",
             error : error.message
@@ -72,24 +74,6 @@ const deleteReviews = async function(request,response){
    
 }
 
-async function top3Plan(request,reponse){
-    // review model -> give me top 3 plans in decresing order of rating
-    try{
-        // find() empty -> full model searchand you will get all the entries
-        let reviews = await reviewModel.find()
-            .limit(3).sort({rating:desc})
-        response.status(201).json({
-            message: "Top 3 plans :-",
-            reviews,
-            success:1
-        })
-    }catch(error){
-        console.log("error "+error);
-        response.status(500).json({
-            message: "Error " + error.message        })
-    }
-}
-
 reviewRouter.use(protectRoute);
 
 reviewRouter.route('/')
@@ -100,8 +84,5 @@ reviewRouter.route('/:id')
     .get(getReviewsById)
     .patch(updateReviews)
     .delete(deleteReviews)
-
-reviewRouter.route("/top3Plan").get(top3Plan);
-
 
 module.exports = reviewRouter;
